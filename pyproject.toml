@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "modulo-bookstore"
+name = "bookstore"
 version = "0.1.0"
 description = "Bookstore API"
 authors = ["JefersonCL21 <jeferson@courageousland.com>"]
