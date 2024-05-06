@@ -16,21 +16,16 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Environment-based settings
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-f*k@=53bc5!shef1-6w+m$-g)kspbaljz%8k4(j7iuc-u2_dyd")
+DEBUG = int(os.environ.get("DEBUG", default=1))  # Default to 1 for development
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-f*k@=53bc5!shef1-6w+m$-g)kspbaljz%8k4(j7iuc-u2_dyd"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+allowed_hosts = os.environ.get("DJANGO_ALLOWED_HOSTS")
+ALLOWED_HOSTS = allowed_hosts.split(" ") if allowed_hosts else []
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -77,10 +72,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bookstore.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
@@ -94,7 +87,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -110,31 +102,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 STATIC_URL = "/static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
@@ -150,10 +132,52 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
-DEBUG = int(os.environ.get("DEBUG", default=0))
+# Email settings
+# Dummy backend for development
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
-# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+# Security settings
+CSRF_COOKIE_SECURE = not DEBUG  # Enable CSRF cookie only over HTTPS when not in DEBUG mode
+SESSION_COOKIE_SECURE = not DEBUG  # Enable session cookies only over HTTPS when not in DEBUG mode
+SECURE_SSL_REDIRECT = not DEBUG  # Redirect all non-HTTPS requests to HTTPS when not in DEBUG mode
+SECURE_BROWSER_XSS_FILTER = True  # Enable XSS protection header
+X_FRAME_OPTIONS = 'DENY'  # Protect against clickjacking
+
+# Media files (User uploaded content)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Additional middleware configurations
+# Use WhiteNoise to serve static files in production
+if not DEBUG:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Health checks endpoints for deployment services
+if DEBUG:
+    INSTALLED_APPS += ['health_check', 'health_check.db', 'health_check.cache', 'health_check.storage']
+
+# Additional configurations as required for project specifics
+# e.g., third-party apps configurations, project-specific settings
+
+# Ensure the configuration file ends with this to prevent accidental code execution if the settings file is read improperly
+__all__ = ['INSTALLED_APPS', 'MIDDLEWARE', 'TEMPLATES', 'DATABASES', 'AUTH_PASSWORD_VALIDATORS', 'STATIC_URL', 'DEFAULT_AUTO_FIELD', 'REST_FRAMEWORK', 'SECRET_KEY', 'DEBUG', 'ALLOWED_HOSTS']
