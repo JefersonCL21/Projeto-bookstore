@@ -78,17 +78,22 @@ files = [
 Django = ">=3.2"
 
 [[package]]
-name = "django-rest-framework"
-version = "0.1.0"
-description = "alias."
+name = "django-health-check"
+version = "3.18.2"
+description = "Run checks on services like databases, queue servers, celery processes, etc."
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "django-rest-framework-0.1.0.tar.gz", hash = "sha256:47a8f496fa69e3b6bd79f68dd7a1527d907d6b77f009e9db7cf9bb21cc565e4a"},
+    {file = "django_health_check-3.18.2-py2.py3-none-any.whl", hash = "sha256:16f9c9186236cbc2858fa0d0ecc3566ba2ad2b72683e5678d0d58eb9e8bbba1a"},
+    {file = "django_health_check-3.18.2.tar.gz", hash = "sha256:21235120f8d756fa75ba430d0b0dbb04620fbd7bfac92ed6a0b911915ba38918"},
 ]
 
 [package.dependencies]
-djangorestframework = "*"
+django = ">=2.2"
+
+[package.extras]
+docs = ["sphinx"]
+test = ["boto3", "celery", "django-storages", "pytest", "pytest-cov", "pytest-django", "redis"]
 
 [[package]]
 name = "djangorestframework"
@@ -317,7 +322,21 @@ files = [
     {file = "tzdata-2024.1.tar.gz", hash = "sha256:2674120f8d891909751c38abcdfd386ac0a5a1127954fbc332af6b5ceae07efd"},
 ]
 
+[[package]]
+name = "whitenoise"
+version = "6.6.0"
+description = "Radically simplified static file serving for WSGI applications"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "whitenoise-6.6.0-py3-none-any.whl", hash = "sha256:b1f9db9bf67dc183484d760b99f4080185633136a273a03f6436034a41064146"},
+    {file = "whitenoise-6.6.0.tar.gz", hash = "sha256:8998f7370973447fac1e8ef6e8ded2c5209a7b1f67c1012866dbcd09681c3251"},
+]
+
+[package.extras]
+brotli = ["Brotli"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "efbeddff42e3a8eb73c559fa7f24032acace818ecc4a9b1989bfac9ff013a028"
+content-hash = "0b2efa63e6ebee0633a5a67e4c8c8a1a97a1d9d1c2dea19a4b24cd272854c711"
